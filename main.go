@@ -68,11 +68,12 @@ test took bytes as input.
 		fmt.Printf("]\n")
 		return
 	}
-	fmt.Printf("%#v", input)
+	fmt.Printf("%#v\n", input)
 }
 
 // Based on code from https://tip.golang.org/src/internal/fuzz/encoding.go
 func doDecode(input []byte) {
+	input = bytes.Trim(input, " \t\n;")
 	input = bytes.TrimPrefix(input, []byte("go test fuzz v1\n"))
 	if bytes.HasPrefix(input, []byte("vec![")) {
 		input = bytes.Replace(input, []byte("]"), []byte("}"), -1)
