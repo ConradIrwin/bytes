@@ -17,22 +17,27 @@ import (
 func main() {
 	decode := false
 	rust := false
+	goo := false
 
 	flag.Usage = func() {
-		fmt.Print(`usage: bytes [-d|--decode] [--rust] <file>?
+		fmt.Print(`usage: bytes [-d|--decode|--rust|--go] <file>?
 
 bytes formats binary input as a []byte{} array for use in go code, or a vec![] for rust.
-If no file name is provided, bytes reads from stdin
-If -d or --decode is provided bf converts from the source-code representation back to binary
 
-bytes can also be used to extract the input from a go fuzz file if the fuzz
-test took bytes as input.
+If no file name is provided, bytes reads from stdin
+
+If -d or --decode is passed the transformation is reversed, and formatted bytes
+are output as binary. Supported input formats are valid go []bytes{} and rust
+vec![]'s.  Care is taken to remove comments, spaces, semicolons, etc. so you can
+paste directly from code.  As a special case bytes can also decode go fuzz fixture files
+containing bytes.
 `)
 		flag.PrintDefaults()
 	}
-	flag.BoolVar(&decode, "decode", false, "output formatted bytes as binary")
+	flag.BoolVar(&decode, "decode", false, "decode formatted bytes and output binary")
 	flag.BoolVar(&decode, "d", false, "")
-	flag.BoolVar(&rust, "rust", false, "")
+	flag.BoolVar(&rust, "rust", false, "output in rust syntax")
+	flag.BoolVar(&goo, "go", false, "output in go syntax (default)")
 	flag.Parse()
 
 	var input []byte
